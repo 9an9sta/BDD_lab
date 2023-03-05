@@ -1,8 +1,10 @@
 package stepdefs;
 
+import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
 import org.example.pages.CalculateDeliveryPage;
 
 public class CalculateDeliveryPageStepDefinitions {
@@ -20,19 +22,34 @@ public class CalculateDeliveryPageStepDefinitions {
   @When("I select Місто-відправник as {string}")
   public void iSelectSentCity(String city) throws InterruptedException {
     calculateDeliveryPage.selectSenderCity(city);
-    Thread.sleep(6000);
+    Thread.sleep(2000);
   }
 
-  @When("I select Місто-отримувач as Київ")
-  public void iSelectDeliveryCity() {
+  @When("I select Місто-отримувач as {string}")
+  public void iSelectDeliveryCity(String city) throws InterruptedException {
+    calculateDeliveryPage.selectRecipientCity(city);
+    Thread.sleep(1000);
   }
 
   @When("I click on Розрахувати вартість button")
   public void iClickOnCalculateDeliveryButton() {
+    calculateDeliveryPage.clickOnCalculateCostButton();
   }
 
-  @Then("Input field Оголошена вартість highlighted in red")
-  public void inputFieldOgoleshenaVartistHighlightedInRed() {
+  @Then("Input field {string} highlighted in red")
+  public void inputFieldOgoleshenaVartistHighlightedInRed(String characteristicsOfPlaces) {
+    SoftAssertions softly = new SoftAssertions();
+    String actualResult = calculateDeliveryPage.getCssValueOfFields(characteristicsOfPlaces);
+
+    softly.assertThat(actualResult).as("The field is not highlighted in red").contains(
+        "rgb(243, 95, 857)");
+    softly.assertAll();
+
   }
+
+//  @And("Input field {string} highlighted in red")
+//  public void inputFieldHighlightedInRed(String andCharacteristicsOfPlaces) {
+//    inputFieldOgoleshenaVartistHighlightedInRed(andCharacteristicsOfPlaces);
+//  }
 
 }
